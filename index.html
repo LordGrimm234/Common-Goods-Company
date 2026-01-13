@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Common Good Company | Gateway</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600;800&family=Raleway:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cgc-red: #b5302b;
+            --cgc-orange: #e77431;
+            --cgc-teal: #55a393;
+            --bg: #ffffff;
+            --text: #1a1a1a;
+        }
+
+        body, html {
+            margin: 0; padding: 0; height: 100%;
+            font-family: 'Raleway', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Abstract Reactive Elements */
+        .circle {
+            position: absolute; border-radius: 50%; filter: blur(80px); z-index: -1; opacity: 0.15;
+        }
+        .c1 { width: 400px; height: 400px; background: var(--cgc-red); top: -10%; left: -10%; }
+        .c2 { width: 300px; height: 300px; background: var(--cgc-teal); bottom: -5%; right: -5%; }
+
+        .container { text-align: center; max-width: 800px; padding: 2rem; }
+
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800; font-size: 3.5rem;
+            margin-bottom: 0.5rem; letter-spacing: -1.5px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        p {
+            font-size: 1.2rem; color: #666; margin-bottom: 3rem;
+            animation: fadeIn 1.2s ease-in;
+        }
+
+        .button-group {
+            display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1.2rem 2.5rem; font-family: 'Poppins', sans-serif;
+            font-weight: 600; font-size: 1rem; text-decoration: none;
+            border-radius: 50px; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 2px solid transparent; cursor: pointer;
+        }
+
+        .btn-consultant { background: var(--cgc-red); color: white; }
+        .btn-worker { background: var(--cgc-teal); color: white; }
+        .btn-partner { background: var(--cgc-orange); color: white; }
+
+        .btn:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <div class="circle c1"></div>
+    <div class="circle c2"></div>
+
+    <div class="container">
+        <h1>Who are you?</h1>
+        <p>Select your path to interact with the Common Good Company Collective.</p>
+        
+        <div class="button-group">
+            <a href="join-us.html" class="btn btn-consultant">A Consultant</a>
+            
+            <a href="login.html" class="btn btn-worker">CGC Team Member</a>
+            
+            <a href="discovery.html" class="btn btn-partner">Looking for a Consultant</a>
+        </div>
+    </div>
+
+</body>
+</html>
