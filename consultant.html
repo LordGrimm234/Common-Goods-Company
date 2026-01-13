@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGC | Join Us</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Raleway', sans-serif; display: flex; flex-direction: column; height: 100vh; margin: 0; }
+        header { padding: 1.5rem; text-align: center; font-family: 'Poppins'; color: #b5302b; border-bottom: 1px solid #eee; }
+        #chat { flex: 1; padding: 2rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; }
+        .msg { padding: 1rem; border-radius: 12px; max-width: 70%; }
+        .ai { background: #f9f9f9; align-self: flex-start; }
+        .user { background: #b5302b; color: white; align-self: flex-end; }
+        footer { padding: 1.5rem; display: flex; gap: 10px; border-top: 1px solid #eee; }
+        input { flex: 1; padding: 1rem; border: 1px solid #ddd; border-radius: 8px; }
+        button { padding: 1rem 2rem; background: #b5302b; color: white; border: none; border-radius: 8px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <header>CGC // REGISTRATION</header>
+    <div id="chat"><div class="msg ai">Welcome. What is your full name?</div></div>
+    <footer><input type="text" id="ui" placeholder="Type here..."><button onclick="send()">Send</button></footer>
+    <script>
+        const _supabase = supabase.createClient("https://nrlvqiiwruzdxlzxlxqk.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ybHZxaWl3cnV6ZHhsenhseHFrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgyOTUxMzIsImV4cCI6MjA4Mzg3MTEzMn0.QDoKW-UCPQamWyym5YcJaghAXPZ-42pbwAy0ENL1kVU");
+        let hist = [];
+        async function send() {
+            const txt = document.getElementById('ui').value;
+            if(!txt) return;
+            document.getElementById('chat').innerHTML += `<div class="msg user">${txt}</div>`;
+            document.getElementById('ui').value = "";
+            const res = await fetch("YOUR_SUPABASE_URL/functions/v1/consultant-bot", {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: txt, history: hist })
+            });
+            const data = await res.json();
+            try {
+                const p = JSON.parse(data.reply);
+                if(p.action === "SUBMIT") {
+                    await _supabase.from('join_requests').insert([p.data]);
+                    document.getElementById('chat').innerHTML += `<div class="msg ai">Thank you. CGC has received your application and it is under review.</div>`;
+                    return;
+                }
+            } catch(e) {}
+            document.getElementById('chat').innerHTML += `<div class="msg ai">${data.reply}</div>`;
+            hist.push({ role: "user", parts: [{ text: txt }] }, { role: "model", parts: [{ text: data.reply }] });
+        }
+    </script>
+</body>
+</html>
