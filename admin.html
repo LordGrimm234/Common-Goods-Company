@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGC | Staff Portal</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Raleway', sans-serif; margin: 0; display: flex; height: 100vh; }
+        aside { width: 250px; border-right: 1px solid #eee; padding: 2rem; }
+        main { flex: 1; padding: 3rem; background: #fafafa; overflow-y: auto; }
+        .section { background: white; padding: 2rem; border-radius: 12px; border: 1px solid #eee; margin-bottom: 2rem; }
+        .hidden { display: none !important; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: 1rem; border-bottom: 1px solid #eee; }
+        .btn-add { background: #55a393; color: white; padding: 1rem; border: none; border-radius: 8px; width: 100%; cursor: pointer; }
+        input { width: 100%; padding: 0.8rem; margin: 0.5rem 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+    </style>
+</head>
+<body>
+    <aside>
+        <h3 style="font-family:'Poppins'; color:#55a393;">CGC // INTEL</h3>
+        <p id="roleDisplay" style="font-weight:bold; color:#999; font-size:0.8rem;"></p>
+        <button onclick="window.location.href='index.html'" style="margin-top:2rem;">Exit</button>
+    </aside>
+    <main>
+        <div id="adminSection" class="section hidden">
+            <h2 style="font-family:'Poppins';">Add Consultant</h2>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <input type="text" id="n" placeholder="Name">
+                <input type="text" id="s" placeholder="Specialization">
+                <input type="text" id="g" placeholder="Geography">
+                <input type="text" id="c" placeholder="Contact">
+            </div>
+            <button class="btn-add" onclick="save()">Commit Record</button>
+        </div>
+        <div class="section">
+            <h2 style="font-family:'Poppins';">Registry</h2>
+            <table>
+                <thead><tr><th>Name</th><th>Spec</th><th>Location</th><th class="adm-only hidden">Action</th></tr></thead>
+                <tbody id="list"></tbody>
+            </table>
+        </div>
+    </main>
+    <script>
+        const _supabase = supabase.createClient("https://nrlvqiiwruzdxlzxlxqk.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ybHZxaWl3cnV6ZHhsenhseHFrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgyOTUxMzIsImV4cCI6MjA4Mzg3MTEzMn0.QDoKW-UCPQamWyym5YcJaghAXPZ-42pbwAy0ENL1kVU");
+        const role = new URLSearchParams(window.location.search).get('role');
+        window.onload = () => {
+            document.getElementById('roleDisplay').innerText = `ACCESS: ${role.toUpperCase()}`;
+            if(role === 'admin') {
+                document.getElementById('adminSection').classList.remove('hidden');
+                document.querySelectorAll('.adm-only').forEach(e => e.classList.remove('hidden'));
+            }
+            fetchData();
+        };
+        async function fetchData() {
+            const { data } = await _supabase.from('consultants').select('*');
+            document.getElementById('list').innerHTML = data.map(c => `
+                <tr><td>${c.name}</td><td>${c.specialization}</td><td>${c.geography}</td>
+                <td class="${role !== 'admin' ? 'hidden' : ''}"><button onclick="del('${c.id}')" style="color:red; border:none; background:none; cursor:pointer;">Delete</button></td></tr>
+            `).join('');
+        }
+        async function save() {
+            const d = { name: document.getElementById('n').value, specialization: document.getElementById('s').value, geography: document.getElementById('g').value, contact: document.getElementById('c').value };
+            await _supabase.from('consultants').insert([d]);
+            location.reload();
+        }
+        async function del(id) { if(confirm("Delete?")) { await _supabase.from('consultants').delete().eq('id', id); fetchData(); } }
+    </script>
+</body>
+</html>
