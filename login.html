@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CGC | Login</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Raleway', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .card { width: 350px; text-align: center; padding: 2rem; border: 1px solid #eee; border-radius: 15px; }
+        input { width: 100%; padding: 1rem; margin-bottom: 1rem; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 1rem; border: none; border-radius: 8px; background: #55a393; color: white; font-weight: 700; cursor: pointer; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h2 style="font-family:'Poppins'; color:#55a393;">STAFF LOGIN</h2>
+    <input type="email" id="email" placeholder="Email Address">
+    <input type="password" id="password" placeholder="Password">
+    <button class="btn" onclick="handleLogin()">Login</button>
+</div>
+<script>
+    const _supabase = supabase.createClient("https://nrlvqiiwruzdxlzxlxqk.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ybHZxaWl3cnV6ZHhsenhseHFrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgyOTUxMzIsImV4cCI6MjA4Mzg3MTEzMn0.QDoKW-UCPQamWyym5YcJaghAXPZ-42pbwAy0ENL1kVU");
+    async function handleLogin() {
+        const e = document.getElementById('email').value;
+        const p = document.getElementById('password').value;
+        const { data, error } = await _supabase.auth.signInWithPassword({ email: e, password: p });
+        if (error) alert("Error: " + error.message);
+        else {
+            const role = (e.includes('admin') || e === 'rizwaan@cgc.co') ? 'admin' : 'worker';
+            window.location.href = `admin.html?role=${role}`;
+        }
+    }
+</script>
+</body>
+</html>
